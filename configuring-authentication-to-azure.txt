@@ -1,0 +1,41 @@
+A. Using Cloud Shell - Authenticate
+=============================================
+1. log in to portal.azure.com
+2. open a cloud shell
+3. select bash
+4. terraform version
+5. if the version is not the latest, you can upgrade.
+6. https://www.terraform.io/downloads
+(curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+sudo apt-get update && sudo apt-get install terraform)
+7. Multi-subscription situation, set the account
+8. az account show
+9. az account list --query "[?user.name=='azlabs60@outlook.com'].{Name:name, ID:id, Default:isDefault}" --output Table
+
+
+B. Authenticate Terraform to Azure usign a Service Principal
+===============================================
+1. az ad sp create-for-rbac --name spterraform --role Contributor
+(reset: az ad sp credential reset --name "e5e87b0f-2cc1-46e0-a955-87ca332a1be9")
+2. open $ code ~/.bashrc
+3. Edit these variables:
+export ARM_SUBSCRIPTION_ID="xx"
+export ARM_TENANT_ID="xx"
+export ARM_CLIENT_ID="xx"
+export ARM_CLIENT_SECRET="xx"
+4. . ~/.bashrc
+5. Verify variables by running : printenv | grep ^ARM*
+6. $(env.ARM_CLIENT_SECRET}
+
+
+C. Save Azure Credentials within Terraform config file
+======================================================
+provider "azurerm" {
+  features {}
+
+  subscription_id   = "<azure_subscription_id>"
+  tenant_id         = "<azure_subscription_tenant_id>"
+  client_id         = "<service_principal_appid>"
+  client_secret     = "<service_principal_password>"
+}
